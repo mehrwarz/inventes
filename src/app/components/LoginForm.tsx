@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+"use client"
+import { useState } from "react";
 import Image from "next/image";
 import logo from "../../../public/city-logo.png";
+import LoginButton from "./LoginButton";
 
 const pageStyle = `
     .background-radial-gradient {
@@ -42,27 +44,30 @@ const pageStyle = `
     .bg-glass {
         background-color: #fff8 !important;
         backdrop-filter: saturate(200%) blur(25px);
-    }`
+    }`;
+    
 
-const [formData, setFormData] = useState(null);
-const LoginForm = async () => {
-    return (
-        <div>
-            <style>{pageStyle}</style>
+const LoginForm = () => {
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [keepLogin, setKeepLogin] = useState(false);
+  
+  return (
+    <div>
+      <style>{pageStyle}</style>
       <section className="background-radial-gradient overflow-hidden p-lg-5">
         <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
           <div className="row gx-lg-5 align-items-center mb-5">
-            <div className="col-lg-6 mb-5 mb-lg-0 text-center" style={ {zIndex:10} }>
+            <div
+              className="col-lg-6 mb-5 mb-lg-0 text-center"
+              style={{ zIndex: 10 }}
+            >
               <Image
                 src={logo}
                 alt="City of Alexandria"
                 className="img-fluid mb-4 mx-auto"
-                style={
-                    { width: 300,
-                        height: 300,
-                        maxWidth: "50vw"
-                    }
-                }
+                style={{ width: 300, height: 300, maxWidth: "50vw" }}
               />
               <p
                 className="h2 fw-bold ls-tight ms-0 ms-lg-5 opacity-75"
@@ -74,7 +79,6 @@ const LoginForm = async () => {
                 Inventory Management System
               </span>
             </div>
-
             <div className="col-lg-6 mb-5 mb-lg-0 position-relative">
               <div
                 id="radius-shape-1"
@@ -87,15 +91,17 @@ const LoginForm = async () => {
 
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
-                  <form>
+                <form >
                     <div data-mdb-input-init className="form-outline mb-4">
                       <input
                         type="email"
-                        id="email"
+                        id="username"
                         className="form-control"
-                        name="email"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                       />
-                      <label className="form-label" htmlFor="email">
+                      <label className="form-label" htmlFor="username">
                         Email address
                       </label>
                     </div>
@@ -106,6 +112,8 @@ const LoginForm = async () => {
                         id="password"
                         className="form-control"
                         name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       <label className="form-label" htmlFor="password">
                         Password
@@ -116,26 +124,15 @@ const LoginForm = async () => {
                       <input
                         className="form-check-input me-2"
                         type="checkbox"
-                        value=""
-                        id="remember"
-                        name="remember"
+                        id="keepLogin"
+                        name="keepLogin"
+                        onChange={(e) => setKeepLogin(e.target.checked)}
                       />
-                      <label
-                        className="form-check-label"
-                        htmlFor="remember"
-                      >
+                      <label className="form-check-label" htmlFor="keepLogin">
                         Remember me.
                       </label>
                     </div>
-
-                    <button
-                      type="submit"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      className="btn btn-primary btn-block mb-4"
-                    >
-                      Login
-                    </button>
+                    <LoginButton />
                   </form>
                 </div>
               </div>
@@ -148,3 +145,4 @@ const LoginForm = async () => {
 };
 
 export default LoginForm;
+

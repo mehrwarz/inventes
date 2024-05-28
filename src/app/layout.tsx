@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import "./css/bootstrap.css"
-import "./css/normalizer.css"
-
-const inter = Inter({ subsets: ["latin"] });
+import "./css/bootstrap.css";
+import "./css/normalizer.css";
 
 export const metadata: Metadata = {
   title: "Inventory TES",

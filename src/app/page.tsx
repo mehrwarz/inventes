@@ -1,9 +1,11 @@
-import Image from "next/image";
-
-import LoginForm from "./components/LoginForm";
-
-export default function Home() {
+import LoginForm from './components/LoginForm'
+ 
+const Home = () => {
   return (
-   <LoginForm />
+    <div>
+     <LoginForm />
+    </div>
   );
 }
+
+export default Home;
