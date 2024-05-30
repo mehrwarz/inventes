@@ -1,8 +1,18 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 
-const SysAdmin = () => {
+const SysAdmin = async(data) => {
+  const onButtonClick = () => {
+    console.log("Button clicked");
+    console.log(data);
+  }
+
   return (
-    <div>SysAdmin</div>
+   <main>
+    <h1>Login</h1>
+    <button type="button" onClick={onButtonClick}>Click</button>
+    <p>Data: {data.message}</p>
+   </main>
   )
 }
 
