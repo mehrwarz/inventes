@@ -6,15 +6,6 @@ export default class Model extends Database {
   protected fields = {};
   protected validation = {};
   protected allowedColumns = Array();
-  protected postgresWhereOperators = [
-    '','=', '<>', '!=', '>', '<', '>=', '<=', // Equality and Comparison Operators
-    'LIKE', 'NOT LIKE', // Pattern Matching
-    'IS NULL', 'IS NOT NULL', // NULL Comparison
-    'BETWEEN', 'NOT BETWEEN', // Range Comparison
-    'AND', 'OR', 'NOT', // Logical Operators
-    'IN', 'NOT IN', // Set Membership
-    'ANY', 'ALL' // Subqueries
-  ];
 
   protected postgresWhereOperators = [
     '', '=', '<>', '!=', '>', '<', '>=', '<=', // Equality and Comparison Operators
