@@ -1,9 +1,10 @@
 
-import pool from "@/app/lib/Connection";
+import pool from "@/lib/Connection";
+import { promises } from "dns";
 
 export default class Database {
     public errors = {};
-    protected allowedColumns = [];
+    protected allowedColumns:any;
     protected afterSelect = [];
     protected afterInsert = [];
     protected afterUpdate = [];
@@ -12,19 +13,18 @@ export default class Database {
     protected beforeInsert = [];
     protected beforeUpdate = [];
     protected beforeDelete = [];
-    protected tableName: string;
-    protected primaryKey: string;
+    protected tableName: string | undefined;
+    protected primaryKey: string | undefined;
     public table_name = () => (this.tableName ?? this.constructor.name.toLowerCase() + "s").toString(); // default tabl;
     public primary_key = () => (this.primaryKey ?? this.constructor.name.toLowerCase() + "_id").toString(); // default primary key
 
     protected async Query(qry: string, arg = []): Promise<any[]> {
         const client = await pool.connect();
-
+        
         try {
             const result = await client.query(qry, arg);
             const rows = result.rows; // Extract rows from the result
             const data = await this.afterSelectFunc(rows); // Process data
-
             return data;
         } catch (err) {
             // Check for specific error types
@@ -38,8 +38,8 @@ export default class Database {
                 throw new Error("Error connecting to database. See logs for details."); // Re-throw for further handling
             } else {
                 console.error("Unexpected error:", err);
-                // Handle unexpected errors
-                throw err; // Re-throw for further handling
+                throw new Error("An unexpected error occurred. See logs for details.");
+                // Handle unexpected errors.
             }
         } finally {
             // Always release the connection back to the pool
@@ -51,7 +51,7 @@ export default class Database {
 
 
     // Thhis function get an array of column names and checks with the allowedColumns property of the object and returns only the column name that are allowed.
-    private checkColumns = async (columns: any) => {
+    private async checkColumns (columns: any): Promise<any[]> {
         if (this.allowedColumns.length && this.allowedColumns.includes(columns)) {
             return columns;
         }
@@ -59,13 +59,13 @@ export default class Database {
     }
 
     // This function get a table name as string and return its primary key by quering the Database.
-    protected getPrimaryKey = async (tableName: string) => {
+    protected async getPrimaryKey (tableName: string): promises<any>{
         let primaryKey = await this.Query(`SHOW KEYS from ${tableName} WHERE Key_name = 'primary'`);
         return primaryKey[0].Column_name;
     }
 
     // Here we are maping the column name array and sanitizing the name to pervent sql injection.
-    protected cleanColumnName = async (columnNames: any) => {
+    protected async cleanColumnName(columnNames: any) {
         // Remove column name not allowed.
         columnNames = await this.checkColumns(columnNames);
         // Check if checkColumns return columns.
@@ -90,7 +90,7 @@ export default class Database {
     //retuns the result.
 
 
-    protected async function runModelFunctions(data: any[], funcArrayName: string): Promise<any[]> {
+    protected async runModelFunctions(data: any[], funcArrayName: string): Promise<any[]> {
         if (!this[funcArrayName] || !this[funcArrayName].length) {
             return data; // No functions defined in the array, return data directly
         }
@@ -106,7 +106,7 @@ export default class Database {
             }
             return data;
         } catch (error) {
-            console.error("Error in runAfterFunctions:", error);
+            console.error("Error in runModelFunctions:", error);
             // Handle errors from after-functions (e.g., log, throw)
             throw error; // Re-throw for further handling
         }
@@ -118,57 +118,48 @@ export default class Database {
     // the result.
 
     protected async afterSelectFunc(data: object | any[]): Promise<any[]> {
-        return await this.runAfterFunctions(data, 'afterSelect');
+        return await this.runModelFunctions(data, 'afterSelect');
     }
 
     // This function gets data nd runs function defiend in afterInsertFunc array and return
     // the result.
 
     protected async afterInsertFunc(data: object | any[]): Promise<any[]> {
-        return await this.runAfterFunctions(data, 'afterInsert');
+        return await this.runModelFunctions(data, 'afterInsert');
     }
 
     // This function gets data nd runs function defiend in afterUpdateFunc array and return
     // the result.
 
     protected async afterUpdateFunc(data: any): Promise<any[]> {
-        return await this.runAfterFunctions(data, 'afterUpdate');
+        return await this.runModelFunctions(data, 'afterUpdate');
     }
 
 
     // This function gets data nd runs function defiend in afterDeleteFunc array and return
     // the result
     protected async afterDeleteFunc(data: any): Promise<any[]> {
-        return await this.runAfterFunctions(data, 'afterDelete');
+        return await this.runModelFunctions(data, 'afterDelete');
     }
 
     // This function gets data nd runs function defiend in beforeSelect array and return
     // the result
     protected async beforeSelectFunc(data: object | any[]): Promise<any[]> {
-        return await this.runBeforeFunctions(data, 'beforeSelect');
+        return await this.runModelFunctions(data, 'beforeSelect');
     }
     // This function gets data nd runs function defiend in beforeInsert array and return
     // the result
     protected async beforeInsertFunc(data: object | any[]): Promise<any[]> {
-        return await this.runBeforeFunctions(data, 'beforeInsert');
+        return await this.runModelFunctions(data, 'beforeInsert');
     }
     // This function gets data nd runs function defiend in beforeUpdate array and return
     // the result
     protected async beforeUpdateFunc(data: any): Promise<any[]> {
-        return await this.runBeforeFunctions(data, 'beforeUpdate');
+        return await this.runModelFunctions(data, 'beforeUpdate');
     }
     // This function gets data nd runs function defiend in beforeDelete array and return
     // the result
     protected async beforeDeleteFunc(data: any): Promise<any[]> {
-        return await this.runBeforeFunctions(data, 'beforeDelete');
-    }
-    // This function runs all functions in array and return result  
-    private async runBeforeFunctions(data: any, type: string): Promise<any[]> {
-        let result = [];
-        for (let func of this.beforeFunctions[type]) {
-            let res = await func(data);
-            result.push(res);
-        }
-        return result;
+        return await this.runModelFunctions(data, 'beforeDelete');
     }
 }

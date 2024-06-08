@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import "./css/bootstrap.css";
-import "./css/normalizer.css";
+import "@/public/css/bootstrap.css";
+import "@/public/css/normalizer.css";
+import Navbar from "@/app/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Inventory TES",
@@ -14,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

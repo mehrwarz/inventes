@@ -1,7 +1,8 @@
 
-import Model from "@/app/lib/Model"
+import Model from "@/lib/Model"
 
 export default class User extends Model {
+    
     protected fields = {
         id: "serial primary key",
         username: "varchar(255) not null",

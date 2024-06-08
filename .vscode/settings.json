@@ -6,7 +6,7 @@
             "port": 5432,
             "driver": "PostgreSQL",
             "name": "inventes",
-            "database": "invintes",
+            "database": "inventes",
             "username": "mehrwarz",
             "password": "SysP4ss"
         }

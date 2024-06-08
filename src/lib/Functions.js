@@ -1,9 +1,12 @@
+"server only"
+import { cookies } from "next/headers";
+
 export const encrypt = (data) => {
   // Your encryption logic here
   // Used md5 to encrypt the input and return encrypted value back.
   const crypto = require("crypto");
   const hash = crypto.createHash("md5");
-  const encryptedData = hash.update(data).digest("hex");
+  const encryptedData = hash.update(data.toString()).digest("hex");
   return encryptedData;
 };
 
@@ -75,3 +78,25 @@ const validatoreFunctions = {
   is_nullable: () => true,
 };
 
+// This function get a number as input and generates a random string lenth of the given number.
+export function randomString(length) {
+  let result = Date.now().toString(36);
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 8; i < length; i++) {  
+    result += characters.charAt(Math.floor(Math.random() * 62));
+  };
+  return result;
+}
+
+const bcrypt = require('bcrypt');
+
+export async function saltAndHashPassword(password) {
+  // Generate a random salt with a specific number of rounds (increase rounds for better security)
+  const salt = await bcrypt.genSalt(10);
+
+  // Hash the password with the generated salt
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Return the hashed password
+  return hashedPassword;
+}
