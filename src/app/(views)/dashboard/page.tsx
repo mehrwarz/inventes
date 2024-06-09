@@ -1,9 +1,5 @@
-
-
-const Dashboard = ()=>{
-    return (
-        <h1>Dashboard page</h1>
-    );
+export default function Dashboard (){
+  return (
+    <main>Dashboard</main>
+  )
 }
-
-export default Dashboard;

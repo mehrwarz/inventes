@@ -1,27 +1,15 @@
-import { auth, signOut } from '@/lib/Auth';
+import { auth } from '@/lib/Auth';
 import Link from 'next/link';
 import SingOutButton from './components/SingOutButton';
-
-function SignOut() {
-  return (
-    <form
-      action={async () => {
-        'use server';
-        await signOut();
-      }}
-    >
-      <button type="submit">Sign out</button>
-    </form>
-  );
-}
-const Header = async () => {
-  const session = await auth();
+const Home = async () => {
+  const session = await auth()
 
   if(session){
     return (
       <main>
         <h1> Dashboard component.</h1>
         <SingOutButton />
+        User Email:
       </main>
     );
   }
@@ -34,4 +22,4 @@ const Header = async () => {
   );
 }
 
-export default Header;
+export default Home;

@@ -1,40 +1,43 @@
-import NextAuth from "next-auth";
-import {saltAndHashPassword } from "@/lib/Functions"
-import CredentialsProvider from "next-auth/providers/credentials";
-import User from "@/app/models/User";
+import NextAuth from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+import User from "@/app/models/User"
+import { compareHash } from "./Functions"
+import { error } from "console";
 
-export const {
-    handlers: { GET, POST },
-    auth,
-    signIn,
-    signOut,
-  } = NextAuth({
-    pages: {
-     signIn: '/login',
-      error: '/login'
-    },
-    providers: [
-        CredentialsProvider({
-          async authorize(credentials, req) {
-            // Add logic here to look up the user from the credentials supplied
 
-            const pwHash = saltAndHashPassword(credentials.password)
-            let [username, password ] = credentials;
-            const user = User.where({username:username, password:password});
-            console.log(user)
-      
-            if (user) {
-              // Any object returned will be saved in `user` property of the JWT
-              return user;
-
-            } else {
-              // If you return null then an error will be displayed advising the user to check their details.
-              throw new Error("User not found.")   
-              // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-            
-            }
-          }
-        })
-      ],
-  });
+export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
+  pages: {
+    signIn: '/login',
+    error: '/login',
+  },
+  providers: [
+    Credentials({
+      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
+      // e.g. domain, username, password, 2FA token, etc.
+      // You can also define a function to get the credentials.
+      // The function should return a promise that resolves with an object containing the credentials.
+      credentials: {
+        username: {},
+        password: {},
+      },
+      async authorize(credentials, req) {
+        // Check if the credentials has valid data and is not empty.
+        if (!credentials.username || !credentials.password) {
+          throw error({ error: "Invalid credentials" }) // Add error message
+        }
+        // Add logic here to look up the user from the credentials supplied
+        const userObj = new User();
+        const user = await userObj.getFirst({ username: credentials.username });
+        if (!user) {
+          return { error: "Invalid username" } // Add error message
+        }
+        const isValid = await compareHash(credentials.password, user.password)
+        if (!isValid) {
+          return { error: "Incorrect password" } // Add error message
+        }
+        return user
+      },      
+    }),
+  ],
+});
 

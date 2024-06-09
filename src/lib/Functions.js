@@ -1,13 +1,15 @@
 "server only"
-import { cookies } from "next/headers";
 
 export const encrypt = (data) => {
   // Your encryption logic here
   // Used md5 to encrypt the input and return encrypted value back.
-  const crypto = require("crypto");
-  const hash = crypto.createHash("md5");
-  const encryptedData = hash.update(data.toString()).digest("hex");
-  return encryptedData;
+  if (data) {
+    const crypto = require("crypto");
+    const hash = crypto.createHash("md5");
+    const encryptedData = hash.update(data.toString()).digest("hex");
+    return encryptedData;
+  }
+  return;
 };
 
 export const decrypt = (data) => {
@@ -82,7 +84,7 @@ const validatoreFunctions = {
 export function randomString(length) {
   let result = Date.now().toString(36);
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 8; i < length; i++) {  
+  for (let i = 8; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * 62));
   };
   return result;
@@ -99,4 +101,8 @@ export async function saltAndHashPassword(password) {
 
   // Return the hashed password
   return hashedPassword;
+}
+
+export async function compareHash(plainText,hashed){  
+  return await bcrypt.compare(plainText,hashed).then(result => result);
 }

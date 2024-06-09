@@ -17,7 +17,35 @@ export default class Model extends Database {
     "ANY", "ALL", // Subqueries
   ];
 
-  public async where( clause: {}, op = "=", ord = "desc", limit = 500, offset = 0): Promise<any[]> {
+  public async getFirst(clause: {}) {
+    try {
+      let query = `select * from ${this.table_name()} where `
+      const [columns, values] = [Object.keys(clause), Object.values(clause)];
+      for (let i = 0; i < columns.length; i++) {
+        query += `${columns[i]} = '${values[i]}' `;
+        if (i < columns.length - 1) {
+          query += `and `
+        }
+      }
+      query += ` limit 1;`;
+
+      let result = await this.Query(query);
+      if (result) {
+        return result[0];
+      }
+      return false;
+
+    } catch (err) {
+      console.log(err);
+      throw new Error('Unable to run the query in database. See log for more information.')
+    }
+  }
+
+
+
+
+
+  public async where(clause: {}, op = "=", ord = "desc", limit = 500, offset = 0): Promise<any[]> {
     try {
       // Validate operator
       if (!this.postgresWhereOperators.includes(op.toUpperCase())) {
@@ -86,7 +114,7 @@ export default class Model extends Database {
   public get = async (lim = 500, offs = 0, ord = "desc") => {
     try {
       // Here we are makeing sure that the limit and offset values are only numbers. and the order is string only.
-      
+
       const query = `SELECT * FROM ${this.table_name()} ORDER BY ${this.primary_key()} ($1) LIMIT $2 OFFSET $3`;
       const data = await this.Query(query, [ord, lim, offs]);
       return await this.afterSelectFunc(data);
@@ -96,7 +124,7 @@ export default class Model extends Database {
     }
   };
 
-  public innerJoin = async (table: string,id: any, col: string,value: any, order = "desc") => {
+  public innerJoin = async (table: string, id: any, col: string, value: any, order = "desc") => {
     const column = this.cleanColumnName(col);
     if (column) {
       const stmt = `SELECT * FROM ${this.table_name()} INNER JOIN (table) ON ${this.primary_key} = (table).(id) where (column) = (value) order by ${this.primary_key()} (order)`;
