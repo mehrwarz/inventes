@@ -81,7 +81,7 @@ const validatoreFunctions = {
 };
 
 // This function get a number as input and generates a random string lenth of the given number.
-export function randomString(length) {
+export function randomString(length=32) {
   let result = Date.now().toString(36);
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 8; i < length; i++) {

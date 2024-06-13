@@ -2,7 +2,7 @@ import LoginForm from '@/app/components/LoginForm'
 import Image from "next/image";
 import logo from "/src/public/city-logo.png";
 
-const LoginPage = async () => {
+const LoginPage = async (err) => {
 
   const pageStyle = `
     .background-radial-gradient {
@@ -43,7 +43,9 @@ const LoginPage = async () => {
     
     .bg-glass {
         background-color: #fff8 !important;
-        backdrop-filter: saturate(200%) blur(25px);
+        backdrop-filter: saturateimport { error } from 'console';
+(200%) blur(25px);import { errors } from '../../../../../.next/static/chunks/fallback/main';
+
     }`;
 
   return (
@@ -81,7 +83,7 @@ const LoginPage = async () => {
                 id="radius-shape-2"
                 className="position-absolute shadow-5-strong"
               ></div>
-
+              Err: {JSON.stringify(err)}
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                   <LoginForm />

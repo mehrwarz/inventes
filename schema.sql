@@ -1,14 +1,19 @@
 DROP TABLE users;
 create TABLE users (
     id serial not null primary key,
-    username varchar(50) not null,
     password varchar(64) not null,
-    remember boolean default false,
-    status boolean default true,
-    name VARCHAR(255),
-    email VARCHAR(255),
-    "emailVerified" TIMESTAMPTZ,
-    image TEXT
+    email varchar(15),
+    password 
+    name
+    first_name
+    last_name
+    phone_number
+    profile_picture
+    status
+    created_at
+    updated_at
+    verification_code
+    role
 );
 
 INSERT INTO users (
