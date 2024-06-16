@@ -1,13 +1,22 @@
-// /src/app/auth/error.tsx
-"use client"
-import React from "react"
+'use client';
 
-const ErrorPage = (errors: any) => {
-  return(
+import { useSearchParams } from 'next/navigation';
+
+const ErrorPage = () => {
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
+  console.log('*****************************************************************\n', 
+    error,
+    "**********************************************************************"
+  );
+
+
+  return (
     <div>
-        Errores Returned:  {JSON.stringify(errors)}
+      <h1>Authentication Error</h1>
     </div>
-  )
-}
+  );
+};
 
-export default ErrorPage
+export default ErrorPage;
+

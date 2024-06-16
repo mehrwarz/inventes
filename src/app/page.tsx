@@ -14,11 +14,13 @@ const Home = async () => {
       <main>
         <h1> Dashboard component.</h1>
         <SingOutButton />
-        User Email: { JSON.stringify(user.email)}
+        User Email: { JSON.stringify(user.username)}
 
+        { JSON.stringify( await auth() ) }
       </main>
     );
   }
+
   return (
    <main>
     <h1>Normale Page.</h1>    

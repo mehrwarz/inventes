@@ -2,51 +2,47 @@ import LoginForm from '@/app/components/LoginForm'
 import Image from "next/image";
 import logo from "/src/public/city-logo.png";
 
-const LoginPage = async (err) => {
+const LoginPage = async () => {
+  const pageStyle = `.background-radial-gradient {
+    background-color: hsl(218, 41%, 15%);
+    background-image: radial-gradient(650px circle at 0% 0%,
+            #354f7e 15%,
+            #2d446c 35%,
+            #1e2d48 75%,
+            #1d2b44 80%,
+            transparent 100%),
+        radial-gradient(1250px circle at 100% 100%,
+            #4466a2 15%,
+            #2d446c 35%,
+            #1e2d48 75%,
+            #1d2b44 80%,
+            transparent 100%);
+    min-height: 100vh;
+}
 
-  const pageStyle = `
-    .background-radial-gradient {
-        background-color: hsl(218, 41%, 15%);
-        background-image: radial-gradient(650px circle at 0% 0%,
-                #354f7e 15%,
-                #2d446c 35%,
-                #1e2d48 75%,
-                #1d2b44 80%,
-                transparent 100%),
-            radial-gradient(1250px circle at 100% 100%,
-                #4466a2 15%,
-                #2d446c 35%,
-                #1e2d48 75%,
-                #1d2b44 80%,
-                transparent 100%);
-        min-height: 100vh;
-    }
-    
-    #radius-shape-1 {
-        height: 220px;
-        width: 220px;
-        top: -60px;
-        left: -130px;
-        background: radial-gradient(#44006b, #ad1fff);
-        overflow: hidden;
-    }
-    
-    #radius-shape-2 {
-        border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
-        bottom: -60px;
-        right: -110px;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(#44006b, #ad1fff);
-        overflow: hidden;
-    }
-    
-    .bg-glass {
-        background-color: #fff8 !important;
-        backdrop-filter: saturateimport { error } from 'console';
-(200%) blur(25px);import { errors } from '../../../../../.next/static/chunks/fallback/main';
+#radius-shape-1 {
+    height: 220px;
+    width: 220px;
+    top: -60px;
+    left: -130px;
+    background: radial-gradient(#44006b, #ad1fff);
+    overflow: hidden;
+}
 
-    }`;
+#radius-shape-2 {
+    border-radius: 38% 62% 63% 37% / 70% 33% 67% 30%;
+    bottom: -60px;
+    right: -110px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(#44006b, #ad1fff);
+    overflow: hidden;
+}
+
+.bg-glass {
+    background-color: #fff8 !important;
+    backdrop-filter: (200%) blur(25px);
+}`;
 
   return (
     <div>
@@ -83,7 +79,6 @@ const LoginPage = async (err) => {
                 id="radius-shape-2"
                 className="position-absolute shadow-5-strong"
               ></div>
-              Err: {JSON.stringify(err)}
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                   <LoginForm />

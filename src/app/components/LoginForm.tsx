@@ -1,29 +1,41 @@
-"use client"
-import { getCsrfToken } from "next-auth/react";
+"use client";
+import { getCsrfToken, signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
 
 function LoginForm() {
-  const [csrfToken, setCsrfToken] = useState('');
+  const [csrfToken, setCsrfToken] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null) as Array<any>;
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault(); // Prevent default form submission
-    if (!username) {
-      setError("Username is required");
-      return false;
+  const setErrorIfEmpty = (field: string, message: string) => {
+    if (!field) {
+      setError(message);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError(null); // Clear error on submit
+
+    setErrorIfEmpty(username, "Username is required");
+    // Add password validation if needed
+
+    if (error) {
+      return; // Don't submit if there's an error
     }
 
-    if (!password) {
-      setError("Password is required");
-      return false; // Don't submit if fields are empty
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
+      csrfToken,
+    }) as any;
+    console.log(JSON.stringify(res))
+    if (res.error) {
+      setError(res.error);
     }
-    // add method and action to event.
-    e.target.method = "post";
-    e.target.action = "/api/auth/callback/credentials";
-    // Submit the form
-    e.target.submit();
   };
 
   useEffect(() => {
@@ -32,7 +44,7 @@ function LoginForm() {
       setCsrfToken(token);
     };
     fetchToken();
-  }, []); // Empty dependency array ensures fetching only once on mount
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} method="post">
@@ -45,8 +57,9 @@ function LoginForm() {
           name="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          aria-label="Username"
         />
-        <label className="form-label" htmlFor="username"> Email address </label>
+        <label className="form-label" htmlFor="username">Email address</label>
       </div>
 
       <div data-mdb-input-init className="form-outline mb-4">
@@ -57,12 +70,12 @@ function LoginForm() {
           name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          aria-label="Password"
         />
-        <label className="form-label" htmlFor="password"> Password </label>
+        <label className="form-label" htmlFor="password">Password</label>
       </div>
 
       {error && <p className="text-bg-danger">{error}</p>}
-
       <div className="form-check d-flex justify-content-center mb-4">
         <input
           className="form-check-input me-2"
@@ -70,9 +83,10 @@ function LoginForm() {
           id="keepLogin"
           name="keepLogin"
         />
-        <label className="form-check-label" htmlFor="keepLogin"> Remember me. </label>
+        <label className="form-check-label" htmlFor="keepLogin">Remember me</label>
       </div>
-      <button type="submit" className="btn btn-primary btn-block mb-4"> Login </button>
+
+      <button type="submit" className="btn btn-primary btn-block mb-4">Login</button>
     </form>
   );
 }
