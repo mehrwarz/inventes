@@ -27,7 +27,7 @@ function LoginForm() {
     }
 
     const res = await signIn("credentials", {
-      redirect: false,
+      callbackUrl: '/dashboard',
       username,
       password,
       csrfToken,
